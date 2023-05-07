@@ -4,7 +4,7 @@
 # up and running to execute the migration and seeder
 # in real cases the db will be exist and we can run 
 # it directly in the docker file 
-sleep 10;
+sleep 15;
 
 echo "MySQL is running on port 3306"
 
