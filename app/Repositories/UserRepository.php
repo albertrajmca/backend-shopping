@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserRepository
 {
-    public function findUser(string $email)
+    public function findUser(string $email): User
     {
         return User::where('email', $email)->first();
     }

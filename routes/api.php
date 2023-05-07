@@ -17,19 +17,6 @@ use Laravel\Sanctum\PersonalAccessToken;
 |
  */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     // return $request->user();
-//     if ($request->hasHeader('Authorization')) {
-//         $header = $request->header('Authorization', '');
-//         if (Str::startsWith($header, 'Bearer ')) {
-//             $token = Str::substr($header, 7);
-//         }
-//         return PersonalAccessToken::findToken($token)->tokenable;
-//     } else {
-//         return "no";
-//     }
-// });
-
 // Token API
 Route::post('tokens/create', 'TokenController@createToken')->name('token.store');
 

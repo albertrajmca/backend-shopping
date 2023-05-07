@@ -2,15 +2,12 @@
 
 namespace App\Repositories;
 
-use App\Models\Product;
 use App\Models\Review;
-use Illuminate\Database\Eloquent\Collection;
-use DB;
+
 
 class ProductReviewRepository
 {
-
-    public function store($data)
+    public function store($data): void
     {
         $review = new Review();
         $review->user_id = $data->user()->id;
