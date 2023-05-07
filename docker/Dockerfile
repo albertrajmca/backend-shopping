@@ -27,9 +27,6 @@ COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN chown -R www-data:www-data /var/www/html && a2enmod rewrite
  
- # Install Laravel dependencies
-RUN composer install --no-interaction --no-ansi --no-scripts --no-progress --prefer-dist
-
  # Copy the entrypoint script
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
