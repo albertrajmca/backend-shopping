@@ -3,12 +3,25 @@
 namespace App\Services;
 
 use App\Repositories\ProductReviewRepository;
+use Illuminate\Http\Request;
 
 class ProductReviewService implements ProductReviewServiceInterface
 {
-    public function __construct(public ProductReviewRepository $reviewRepository){}
+    /**
+     * Constructor
+     *
+     * @param ProductReviewRepository $reviewRepository
+     */
+    public function __construct(public ProductReviewRepository $reviewRepository)
+    {}
 
-    public function store($request)
+    /**
+     * Product review store
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function store(Request $request): void
     {
         $this->reviewRepository->store($request);
     }

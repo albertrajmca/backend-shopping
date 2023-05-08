@@ -7,16 +7,19 @@ use App\Services\ProductServiceInterface;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-/**
- * ProductController class
- */
 class ProductController extends Controller
 {
+    /**
+     * Constructor 
+     *
+     * @param ProductServiceInterface $productService
+     */
     public function __construct(public ProductServiceInterface $productService){}
 
     /**
      * Method used to list out all the products
      *
+     * @param Request $request
      * @return AnonymousResourceCollection
      */
     public function index(Request $request): AnonymousResourceCollection
@@ -28,7 +31,7 @@ class ProductController extends Controller
     /**
      * Method used to show the individual product
      *
-     * @param integer $id
+     * @param int $id
      * @return ProductResource
      */
     public function show(int $id): ProductResource

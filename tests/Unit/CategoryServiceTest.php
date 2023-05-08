@@ -15,11 +15,15 @@ class CategoryServiceTest extends TestCase
      */
     public function test_mock_category_servie()
     {
-        $this->mock(CategoryServiceInterface::class, function(MockInterface $mock){
+        $sampleData = [    
+                        ['id' => 1,'name' => 'Apparels'],
+                        ['id' => 2,'name' => 'Laptops'],
+                    ];
+         $this->mock(CategoryServiceInterface::class, function(MockInterface $mock) use($sampleData){
             $mock
             ->shouldReceive('listAllCategories')
             ->once()
-            ->andReturn("somedata");
+            ->andReturn($sampleData);
         });
        $this->getJson(route('categories.list'));
     }

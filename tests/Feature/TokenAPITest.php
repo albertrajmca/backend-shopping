@@ -21,7 +21,7 @@ class TokenAPITest extends TestCase
         $response = $this->postJson(route('token.store'),
             [
                 'email' => 'random@gmail.com', // invalid email
-                'password' => 'password' 
+                'password' => 'password',
             ]
         );
         $response->assertStatus(422);
@@ -38,7 +38,7 @@ class TokenAPITest extends TestCase
         $response = $this->postJson(route('token.store'),
             [
                 'email' => User::pluck('email')->random(),
-                'password' => 'passwords' 
+                'password' => 'passwords',
             ]
         );
         $response->assertStatus(401);
@@ -52,20 +52,34 @@ class TokenAPITest extends TestCase
     {
         User::factory()->count(4)->create();
 
+        $randomUserEmail = User::pluck('email')->random();
+
         $response = $this->postJson(route('token.store'),
-                [
-                    'email' => User::pluck('email')->random(),
-                    'password' => 'password' // intentionally kept it in Users factory
-                ]
-            );
+            [
+                'email' => $randomUserEmail,
+                'password' => 'password', // intentionally kept it in Users factory
+            ]
+        );
+
+        // few orm assertion
+        $user = User::whereEmail($randomUserEmail)->first();
+        $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => $randomUserEmail]);
+        $this->assertDatabaseMissing('users', ['name' => 'NonExistingUser']);
+
         $response->assertStatus(200);
         $response->assertJsonStructure([
-                'user' => [
-                        "id",
-                        "name"
-                    ],
-                'token'
-            ]);
+            'user' => [
+                "id",
+                "name",
+            ],
+            'token',
+        ]);
+
+        $response->assertJsonStructure(['token']);
+        $token = $response->json('token');
+        $this->assertIsString($token);
+        $userData = $response->json('user');
+        $this->assertIsInt($userData['id']);
+        $this->assertIsString($userData['name']);
     }
 }
-

@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
+
 interface ProductReviewServiceInterface
 {
-    public function store($request);
+    public function store(Request $request);
 }

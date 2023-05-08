@@ -3,16 +3,23 @@
 namespace App\Repositories;
 
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use DB;
+use Illuminate\Http\Request;
 
 class ProductRepository
 {
-    public function getAllProducts($request): Collection
+    /**
+     * Get all products
+     *
+     * @param Request $request
+     * @return Collection
+     */
+    public function getAllProducts(Request $request): Collection
     {
         // base query
         $query = Product::with('category')
-                ->withAvg('reviews','rating');
+            ->withAvg('reviews', 'rating');
 
         $query = $this->applyFilters($request, $query);
 
@@ -20,7 +27,7 @@ class ProductRepository
         if ($request->has('sort')) {
             [$queryColumn, $order] = explode(':', $request->query('sort'));
 
-            // using join since the category is a relation 
+            // using join since the category is a relation
             if ($queryColumn === 'category') {
                 $query->join('categories', 'categories.id', '=', 'products.category_id')
                     ->select('products.*');
@@ -29,8 +36,6 @@ class ProductRepository
             $sortColumn = $this->mapSortColumn($queryColumn);
             $query->orderBy($sortColumn, $order);
         }
-
-
         return $query->get();
     }
 
@@ -38,26 +43,26 @@ class ProductRepository
      * Apply filter
      *
      * @param Request $request
-     * @param $query
+     * @param Builder $query
      * @return mixed
      */
-    private function applyFilters($request, $query): mixed
+    private function applyFilters(Request $request, Builder $query): mixed
     {
-        $request->whenHas('category', function (string $input) use($query) {
+        $request->whenHas('category', function (string $input) use ($query) {
             $query->whereIn('category_id', [$input]);
         });
-        $request->whenHas('price', function (string $input) use($query) {
-            $query->whereBetween('price', explode(",",$input));
+        $request->whenHas('price', function (string $input) use ($query) {
+            $query->whereBetween('price', explode(",", $input));
         });
-        $request->whenHas('availability', function (string $input) use($query) {
+        $request->whenHas('availability', function (string $input) use ($query) {
             $query->where('units', '>', $input);
         });
         return $query;
     }
-    
+
     /**
      * Map the query param with table column
-     * 
+     *
      * @param string $column
      * @return string
      */
@@ -80,7 +85,7 @@ class ProductRepository
     {
         return Product::where('id', $id)
             ->with(['reviews.user'])
-            ->withAvg('reviews','rating')
+            ->withAvg('reviews', 'rating')
             ->first();
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
+
 interface ProductServiceInterface
 {
-    public function listAllProducts($request);
-    public function showProduct($id);
+    public function listAllProducts(Request $request);
+    public function showProduct(int $id);
 }

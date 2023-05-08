@@ -24,11 +24,16 @@ class CategoryAPIsTest extends TestCase
         $response->assertJsonStructure([
             'data' =>  [
                 '*' => [
-                        "id",
-                        "name"
+                        'id',
+                        'name'   
                     ],
             ],
         ]);
+        $data = $response->json('data');
+        foreach ($data as $category) {
+            $this->assertIsInt($category['id']);
+            $this->assertIsString($category['name']);
+        }
     }
 }
 

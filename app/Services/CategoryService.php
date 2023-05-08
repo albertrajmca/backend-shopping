@@ -3,16 +3,25 @@
 namespace App\Services;
 
 use App\Repositories\CategoryRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 class CategoryService implements CategoryServiceInterface
 {
-    public function __construct(public CategoryRepository $categoryRepository){}
+    /**
+     * Constructor
+     *
+     * @param CategoryRepository $categoryRepository
+     */
+    public function __construct(public CategoryRepository $categoryRepository)
+    {}
 
-    public function listAllCategories()
+    /**
+     * Get All categories
+     *
+     * @return Collection
+     */
+    public function listAllCategories(): Collection
     {
         return $this->categoryRepository->getAllCategories();
     }
-
-
-
 }

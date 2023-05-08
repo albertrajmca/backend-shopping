@@ -4,21 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CategoryResource;
 use App\Services\CategoryServiceInterface;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-/**
- * CategoryController class
- */
 class CategoryController extends Controller
 {
 
-    public function __construct(public CategoryServiceInterface $categoryService){}
-   
+    /**
+     * Constructor
+     *
+     * @param CategoryServiceInterface $categoryService
+     */
+    public function __construct(public CategoryServiceInterface $categoryService)
+    {}
+
     /**
      * Method used to get all categories.
      *
-     * @return \Illuminate\Http\Response
+     * @return AnonymousResourceCollection
      */
-    public function __invoke()
+    public function __invoke(): AnonymousResourceCollection
     {
         $categories = $this->categoryService->listAllCategories();
         return CategoryResource::collection($categories);

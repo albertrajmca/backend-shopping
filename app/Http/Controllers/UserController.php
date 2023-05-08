@@ -15,10 +15,10 @@ class UserController extends Controller
     {}
 
     /**
-     * Method used to sign up a user 
+     * Method used to sign up a user
      *
      * @param SignupRequest $request
-     * @return String
+     * @return array
      */
     public function store(SignupRequest $request): array
     {

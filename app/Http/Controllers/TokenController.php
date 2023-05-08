@@ -7,9 +7,6 @@ use App\Http\Resources\UserResource;
 use App\Services\UserServiceInterface;
 use Illuminate\Http\Response;
 
-/**
- * TokenController class
- */
 class TokenController extends Controller
 {
     /**
@@ -32,9 +29,9 @@ class TokenController extends Controller
             return response("Invalid credentials passed", 401);
         }
 
-            return response([
-                        'token' => $response['token'],
-                        'user' => UserResource::make($response['user']),
-                       ]);
+        return response([
+            'token' => $response['token'],
+            'user' => UserResource::make($response['user']),
+        ]);
     }
 }

@@ -4,15 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RatingStoreRequest;
 use App\Services\ProductReviewServiceInterface;
+use Illuminate\Http\Response;
 
 class ProductReviewController extends Controller
 {
 
-    public function __construct(public ProductReviewServiceInterface $reviewService){}
+    /**
+     * Constructor
+     *
+     * @param ProductReviewServiceInterface $reviewService
+     */
+    public function __construct(public ProductReviewServiceInterface $reviewService)
+    {}
 
-    public function store(RatingStoreRequest $request)
+     /**
+      * Store the Review
+      *
+      * @param RatingStoreRequest $request
+      * @return Response
+      */
+    public function store(RatingStoreRequest $request): Response
     {
-         $this->reviewService->store($request);
-         return response(['msg' => 'Review is submitted successfully'], 201);
+        $this->reviewService->store($request);
+        return response(['msg' => 'Review is submitted successfully'], 201);
     }
 }

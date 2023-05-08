@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use Faker\Factory as Faker;
 
 class SignupAPITest extends TestCase
 {
@@ -19,18 +19,18 @@ class SignupAPITest extends TestCase
      */
     public function test_invalid_inputs_validation()
     {
-        $faker =  Faker::create();
+        $faker = Faker::create();
         $password = $faker->password;
 
         $inputs = [
             "name_invalid" => $faker->name,
             "email" => $faker->safeEmail,
-            "password" =>  $password,
-            "password_confirmation" => $password
+            "password" => $password,
+            "password_confirmation" => $password,
         ];
 
         $response = $this->postJson(route('users.signup'),
-                                    $inputs
+            $inputs
         );
         $response->assertStatus(422);
     }
@@ -41,21 +41,23 @@ class SignupAPITest extends TestCase
      */
     public function test_valid_inputs_validation()
     {
-        $faker =  Faker::create();
+        $faker = Faker::create();
         $password = $faker->password;
 
         $inputs = [
             "name" => $faker->name,
             "email" => $faker->safeEmail,
-            "password" =>  $password,
-            "password_confirmation" => $password
+            "password" => $password,
+            "password_confirmation" => $password,
         ];
 
         $response = $this->postJson(route('users.signup'),
-                                    $inputs
+            $inputs
         );
         $response->assertStatus(200);
         $response->assertJsonStructure(['token']);
+        $token = $response->json('token');
+        $this->assertIsString($token);
     }
 
     /**
@@ -69,7 +71,7 @@ class SignupAPITest extends TestCase
         $response = $this->postJson(route('token.store'),
             [
                 'email' => User::pluck('email')->random(),
-                'password' => 'passwords' 
+                'password' => 'passwords',
             ]
         );
         $response->assertStatus(401);
@@ -84,19 +86,25 @@ class SignupAPITest extends TestCase
         User::factory()->count(4)->create();
 
         $response = $this->postJson(route('token.store'),
-                [
-                    'email' => User::pluck('email')->random(),
-                    'password' => 'password' // intentionally kept it in Users factory
-                ]
-            );
+            [
+                'email' => User::pluck('email')->random(),
+                'password' => 'password', // intentionally kept it in Users factory
+            ]
+        );
         $response->assertStatus(200);
         $response->assertJsonStructure([
-                'user' => [
-                        "id",
-                        "name"
-                    ],
-                'token'
-            ]);
+            'user' => [
+                "id",
+                "name",
+            ],
+            'token',
+        ]);
+
+        $response->assertJsonStructure(['token']);
+        $token = $response->json('token');
+        $this->assertIsString($token);
+        $userData = $response->json('user');
+        $this->assertIsInt($userData['id']);
+        $this->assertIsString($userData['name']);
     }
 }
-

@@ -3,11 +3,17 @@
 namespace App\Repositories;
 
 use App\Models\Review;
-
+use Illuminate\Http\Request;
 
 class ProductReviewRepository
 {
-    public function store($data): void
+    /**
+     * Store the product review
+     *
+     * @param Request $data
+     * @return void
+     */
+    public function store(Request $data): void
     {
         $review = new Review();
         $review->user_id = $data->user()->id;
