@@ -36,6 +36,10 @@ class SignupAPITest extends TestCase
         $token = $response->json('token');
         $this->assertIsString($token);
 
+        // DB assertion
+        $this->assertDatabaseHas('users', ['name' => $inputs['name'], 'email' => $inputs['email']]);
+        $this->assertDatabaseMissing('users', ['email' => 'notexistingemail@ss.com']);
+
         // unique email check
         $response = $this->postJson(route('users.signup'),
             $inputs

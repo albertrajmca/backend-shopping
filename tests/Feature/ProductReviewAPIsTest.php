@@ -47,6 +47,10 @@ class ProductReviewAPIsTest extends TestCase
         $response->assertJsonStructure(['msg']);
         $msg = $response->json('msg');
         $this->assertIsString($msg);
+
+        // DB assertion
+        $this->assertDatabaseHas('reviews', ['title' => 'test title', 'rating' => 3, 'comment' => 'test comment']);
+        $this->assertDatabaseMissing('reviews', ['title' => 'not existing title']);
     }
 
     /**
