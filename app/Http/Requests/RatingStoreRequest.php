@@ -24,7 +24,7 @@ class RatingStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string',
+            'title' => 'required|string|min:5|max:50',
             'rating' => 'required|integer|between:1,5',
             'comment' => 'required'
         ];

@@ -49,7 +49,7 @@ class ProductRepository
     private function applyFilters(Request $request, Builder $query): mixed
     {
         $request->whenHas('category', function (string $input) use ($query) {
-            $query->whereIn('category_id', [$input]);
+            $query->whereIn('category_id', explode(",", $input));
         });
         $request->whenHas('price', function (string $input) use ($query) {
             $query->whereBetween('price', explode(",", $input));

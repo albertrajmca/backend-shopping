@@ -15,3 +15,10 @@ php artisan migrate --seed (run incase of any error occured in the previous step
 php artisan test
 </code></pre>
 <p> Application will run on port 8000, we can access it by the URL "http://localhost:8000"</p>
+
+```
+screen shot of test case results
+```
+
+![alt text](./screenshots/unit_test.png)
+![alt text](./screenshots/unit_test_2.png)

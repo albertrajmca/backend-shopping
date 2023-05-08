@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\ModelNotCreatedException;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,9 @@ class ProductReviewRepository
         $review->rating = $data->rating;
         $review->comment = $data->comment;
         $review->save();
+        if (!$review) {
+            throw new ModelNotCreatedException("Review model not created");
+        }
     }
 
 }

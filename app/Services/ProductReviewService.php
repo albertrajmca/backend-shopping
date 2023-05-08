@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Exceptions\ModelNotCreatedException;
 use App\Repositories\ProductReviewRepository;
+use Exception;
 use Illuminate\Http\Request;
 
 class ProductReviewService implements ProductReviewServiceInterface
@@ -23,6 +25,10 @@ class ProductReviewService implements ProductReviewServiceInterface
      */
     public function store(Request $request): void
     {
-        $this->reviewRepository->store($request);
+        try {
+            $this->reviewRepository->store($request);
+        } catch (Exception | ModelNotCreatedException $e) {
+            throw new ModelNotCreatedException($e->getMessage());
+        }
     }
 }

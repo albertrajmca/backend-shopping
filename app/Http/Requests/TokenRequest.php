@@ -25,7 +25,7 @@ class TokenRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|exists:'.User::class,',email',
+            'email' => 'required|email|exists:'.User::class,',email',
             'password' => 'required'
         ];
     }

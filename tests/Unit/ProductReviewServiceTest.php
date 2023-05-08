@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Exceptions\ModelNotCreatedException;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\ProductReviewServiceInterface;
@@ -15,6 +16,7 @@ class ProductReviewServiceTest extends TestCase
     use RefreshDatabase;
 
     protected $seed = true;
+
     /**
      * Mock product review service.
      *
@@ -25,13 +27,8 @@ class ProductReviewServiceTest extends TestCase
         $testData = "Review is submitted successfully";
         Product::factory()->count(10)->create();
         User::factory()->count(4)->create();
-        $response = $this->postJson(route('token.store'),
-            [
-                'email' => User::pluck('email')->random(),
-                'password' => 'password', // intentionally kept it in Users factory
-            ]
-        );
-        $decodeResponse = json_decode($response->content(), true);
+        $randomUser = User::first();
+
         $this->mock(ProductReviewServiceInterface::class, function (MockInterface $mock) use ($testData) {
             $mock
                 ->shouldReceive('store')
@@ -40,14 +37,46 @@ class ProductReviewServiceTest extends TestCase
         });
 
         $faker = Faker::create();
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $decodeResponse['token'],
-        ])
+        $this->actingAs($randomUser)
             ->postJson(route('products.review', Product::pluck('id')->random()),
                 [
-                    'title' => $faker->word,
+                    'title' => $faker->realText(10),
                     'rating' => $faker->numberBetween(1, 5),
                     'comment' => $faker->sentence,
                 ]);
+    }
+
+    /**
+     * Mock the model not created exception
+     *
+     * @return void
+     */
+    public function test_mock_product_review_service_exception()
+    {
+        Product::factory()->count(10)->create();
+        $exception = new ModelNotCreatedException("Review model not created");
+        User::factory()->count(4)->create();
+        $randomUser = User::first();
+
+        $this->mock(ProductReviewServiceInterface::class, function (MockInterface $mock) use ($exception) {
+            $mock
+                ->shouldReceive('store')
+                ->once()
+                ->andThrow($exception);
+        });
+
+        $faker = Faker::create();
+        $response = $this->actingAs($randomUser)
+            ->postJson(route('products.review', Product::pluck('id')->random()),
+                [
+                    'title' => $faker->realText(10),
+                    'rating' => $faker->numberBetween(1, 5),
+                    'comment' => $faker->sentence,
+                ]);
+
+        $response->assertUnprocessable();
+        $msg = $response->json('message');
+        $this->assertIsString($msg);
+        $response->assertSee("Review model not created");
     }
 }

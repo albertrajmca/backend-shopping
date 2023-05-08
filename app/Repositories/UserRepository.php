@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\ModelNotCreatedException;
 use App\Models\User;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,7 +18,13 @@ class UserRepository
      */
     public function findUser(string $email): User
     {
-        return User::where('email', $email)->first();
+        // throw new ModelNotFoundException("User model not found");
+
+        $user = User::where('email', $email)->first();
+        if(!$user) {
+            throw new ModelNotFoundException("User model not found");
+        }
+        return $user;
     }
 
     /**
@@ -32,6 +40,9 @@ class UserRepository
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
+        if (!$user) {
+            throw new ModelNotCreatedException("User model not created");
+        }
         return $user;
     }
 }

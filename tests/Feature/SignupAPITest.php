@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -12,28 +11,6 @@ class SignupAPITest extends TestCase
     use RefreshDatabase;
 
     protected $seed = true;
-
-    /**
-     * sign up invalid inputs test
-     *
-     */
-    public function test_invalid_inputs_validation()
-    {
-        $faker = Faker::create();
-        $password = $faker->password;
-
-        $inputs = [
-            "name_invalid" => $faker->name,
-            "email" => $faker->safeEmail,
-            "password" => $password,
-            "password_confirmation" => $password,
-        ];
-
-        $response = $this->postJson(route('users.signup'),
-            $inputs
-        );
-        $response->assertStatus(422);
-    }
 
     /**
      * sign up valid inputs test
@@ -58,53 +35,109 @@ class SignupAPITest extends TestCase
         $response->assertJsonStructure(['token']);
         $token = $response->json('token');
         $this->assertIsString($token);
+
+        // unique email check
+        $response = $this->postJson(route('users.signup'),
+            $inputs
+        );
+        $response->assertStatus(422);
     }
 
     /**
-     * invalid password - token test
-     *
+     * @dataProvider signup_data_that_should_fail
      */
-    public function test_invalid_password_validation()
+    public function test_signup_data_that_should_fail(array $requestData)
     {
-        User::factory()->count(4)->create();
-
-        $response = $this->postJson(route('token.store'),
-            [
-                'email' => User::pluck('email')->random(),
-                'password' => 'passwords',
-            ]
+        $response = $this->postJson(route('users.signup'),
+            $requestData
         );
-        $response->assertStatus(401);
+        $response->assertStatus(422);
     }
 
     /**
-     * Create token API Test
+     * sign up data test cases 
      *
+     * @return array
      */
-    public function test_create_token_api()
+    public function signup_data_that_should_fail(): array
     {
-        User::factory()->count(4)->create();
+        $name = 'Albert Sebastiar';
+        $email = 'albertrajmca@gmail.com';
+        $password = 'abc#ci124JK';
+        $confirmPassword = 'abc#ci124JK';
 
-        $response = $this->postJson(route('token.store'),
-            [
-                'email' => User::pluck('email')->random(),
-                'password' => 'password', // intentionally kept it in Users factory
-            ]
-        );
-        $response->assertStatus(200);
-        $response->assertJsonStructure([
-            'user' => [
-                "id",
-                "name",
+        return [
+            'no_input_data' => [
+                [],
             ],
-            'token',
-        ]);
-
-        $response->assertJsonStructure(['token']);
-        $token = $response->json('token');
-        $this->assertIsString($token);
-        $userData = $response->json('user');
-        $this->assertIsInt($userData['id']);
-        $this->assertIsString($userData['name']);
+            'no_name_input' => [
+                [
+                    'email' => $email,
+                    'password' => $password,
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'no_email_input' => [
+                [
+                    'name' => $name,
+                    'password' => $password,
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'no_password_input' => [
+                [
+                    'name' => $name,
+                    'email' => $email,
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'no_password_confirmation_input' => [
+                [
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => $confirmPassword,
+                ],
+            ],
+            'non_string_name_input' => [
+                [
+                    'name' => 999,
+                    'email' => $email,
+                    'password' => $password,
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'invalid_email_input' => [
+                [
+                    'name' => $name,
+                    'email' => 'albert',
+                    'password' => $password,
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'min_password_length' => [
+                [
+                    'name' => $name,
+                    'email' => 'alb',
+                    'password' => $password,
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'max_password_length' => [
+                [
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => 'abcdefghijklmnopqrstuvwxyz',
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+            'password_mis_match_length' => [
+                [
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => 'mismatch',
+                    'password_confirmation' => $confirmPassword,
+                ],
+            ],
+        ];
     }
 }

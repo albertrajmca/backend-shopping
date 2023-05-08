@@ -12,37 +12,7 @@ class TokenAPITest extends TestCase
 
     protected $seed = true;
 
-    /**
-     * invalid email - token test
-     *
-     */
-    public function test_invalid_email_validation()
-    {
-        $response = $this->postJson(route('token.store'),
-            [
-                'email' => 'random@gmail.com', // invalid email
-                'password' => 'password',
-            ]
-        );
-        $response->assertStatus(422);
-    }
 
-    /**
-     * invalid password - token test
-     *
-     */
-    public function test_invalid_password_validation()
-    {
-        User::factory()->count(4)->create();
-
-        $response = $this->postJson(route('token.store'),
-            [
-                'email' => User::pluck('email')->random(),
-                'password' => 'passwords',
-            ]
-        );
-        $response->assertStatus(401);
-    }
 
     /**
      * Create token API Test
@@ -81,5 +51,50 @@ class TokenAPITest extends TestCase
         $userData = $response->json('user');
         $this->assertIsInt($userData['id']);
         $this->assertIsString($userData['name']);
+    }
+
+    /**
+     *
+     * @dataProvider token_data_that_should_fail
+     */
+    public function test_token_data_that_should_fail(array $requestData)
+    {
+        $response = $this->postJson(route('token.store'),
+            $requestData
+        );
+        $response->assertStatus(422);
+    }
+
+    /**
+     * token data test cases
+     *
+     * @return array
+     */
+    public function token_data_that_should_fail(): array
+    {
+        $email = 'albertrajmca@gmail.com';
+        $password = 'abc#ci124JK';
+
+        return [
+            'no_input_data' => [
+                [],
+            ],
+            'no_email_input' => [
+                [
+                    'password' => $password,
+                ],
+            ],
+            'no_password_input' => [
+                [
+                    'email' => $email,
+                ],
+            ],
+            'invalid_email_input' => [
+                [
+                    'email' => 'albert',
+                    'password' => $password
+                ],
+            ]
+        ];
     }
 }

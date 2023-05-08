@@ -105,4 +105,5 @@ class ProductServiceTest extends TestCase
         });
         $this->getJson(route('products.show', Product::pluck('id')->random()));
     }
+
 }
