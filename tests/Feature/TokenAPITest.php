@@ -12,8 +12,6 @@ class TokenAPITest extends TestCase
 
     protected $seed = true;
 
-
-
     /**
      * Create token API Test
      *
@@ -57,12 +55,22 @@ class TokenAPITest extends TestCase
      *
      * @dataProvider token_data_that_should_fail
      */
-    public function test_token_data_that_should_fail(array $requestData)
+    public function test_token_data_that_should_fail(array $requestData, array $expectedMessage, bool $dynamicEmail)
     {
+
+        // in one case we need an existing email
+        User::factory()->count(5)->create();
+        $existingUser = User::inRandomOrder()->first();
+        if ($dynamicEmail) {
+            $requestData['email'] = $existingUser->email;
+        }
+
         $response = $this->postJson(route('token.store'),
             $requestData
         );
         $response->assertStatus(422);
+        $responseData = json_decode($response->content(), true);
+        $this->assertEquals($responseData, $expectedMessage);
     }
 
     /**
@@ -72,29 +80,67 @@ class TokenAPITest extends TestCase
      */
     public function token_data_that_should_fail(): array
     {
-        $email = 'albertrajmca@gmail.com';
+
+        $email = 'albertvalidemail@gmail.com';
         $password = 'abc#ci124JK';
 
         return [
             'no_input_data' => [
                 [],
+                [
+                    "message" => "The given data was invalid.",
+                    "errors" => [
+                        "email" => [
+                            "The email field is required.",
+                        ],
+                        "password" => [
+                            "The password field is required.",
+                        ],
+                    ],
+                ],
+                false,
+
             ],
             'no_email_input' => [
                 [
                     'password' => $password,
                 ],
+                [
+                    "message" => "The given data was invalid.",
+                    "errors" => [
+                        "email" => [
+                            "The email field is required.",
+                        ],
+                    ],
+                ], false,
             ],
             'no_password_input' => [
                 [
                     'email' => $email,
                 ],
+                [
+                    "message" => "The given data was invalid.",
+                    "errors" => [
+                        "password" => [
+                            "The password field is required.",
+                        ],
+                    ],
+                ], true,
             ],
             'invalid_email_input' => [
                 [
-                    'email' => 'albert',
-                    'password' => $password
+                    'email' => $email,
+                    'password' => $password,
                 ],
-            ]
+                [
+                    "message" => "The given data was invalid.",
+                    "errors" => [
+                        "email" => [
+                            "The selected email is invalid.",
+                        ],
+                    ],
+                ], false,
+            ],
         ];
     }
 }
