@@ -25,10 +25,10 @@ class UserService implements UserServiceInterface
      * @param Request $request
      * @return array
      */
-    public function store(Request $request): array
+    public function createUser(Request $request): array
     {
         try {
-            $user = $this->userRepository->store($request);
+            $user = $this->userRepository->createUser($request);
         } catch (Exception | ModelNotCreatedException $e) {
             throw new ModelNotCreatedException($e->getMessage());
         }

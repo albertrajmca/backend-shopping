@@ -31,7 +31,7 @@ class ProductReviewServiceTest extends TestCase
 
         $this->mock(ProductReviewServiceInterface::class, function (MockInterface $mock) use ($testData) {
             $mock
-                ->shouldReceive('store')
+                ->shouldReceive('postReviewForProduct')
                 ->once()
                 ->andReturn($testData);
         });
@@ -60,7 +60,7 @@ class ProductReviewServiceTest extends TestCase
 
         $this->mock(ProductReviewServiceInterface::class, function (MockInterface $mock) use ($exception) {
             $mock
-                ->shouldReceive('store')
+                ->shouldReceive('postReviewForProduct')
                 ->once()
                 ->andThrow($exception);
         });

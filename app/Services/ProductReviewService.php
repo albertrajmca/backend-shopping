@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DataTransferObjects\RatingDataDTO;
 use App\Exceptions\ModelNotCreatedException;
 use App\Repositories\ProductReviewRepository;
 use Exception;
@@ -23,12 +24,12 @@ class ProductReviewService implements ProductReviewServiceInterface
      * @param Request $request
      * @return void
      */
-    public function store(Request $request): void
+    public function postReviewForProduct(RatingDataDTO $ratingDataDTO): void
     {
-        try {
-            $this->reviewRepository->store($request);
-        } catch (Exception | ModelNotCreatedException $e) {
-            throw new ModelNotCreatedException($e->getMessage());
-        }
+        // try {
+            $this->reviewRepository->postReviewForProduct($ratingDataDTO);
+        // } catch (Exception $e) {
+        //     throw new ModelNotCreatedException($e->getCode(), $e->getMessage());
+        // }
     }
 }

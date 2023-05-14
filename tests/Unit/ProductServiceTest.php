@@ -50,7 +50,7 @@ class ProductServiceTest extends TestCase
         ];
         $this->mock(ProductServiceInterface::class, function (MockInterface $mock) use ($testData) {
             $mock
-                ->shouldReceive('listAllProducts')
+                ->shouldReceive('getAllProducts')
                 ->once()
                 ->andReturn($testData);
         });
@@ -99,7 +99,7 @@ class ProductServiceTest extends TestCase
         Product::factory()->count(10)->create();
         $this->mock(ProductServiceInterface::class, function (MockInterface $mock) use ($testData) {
             $mock
-                ->shouldReceive('showProduct')
+                ->shouldReceive('getSingleProduct')
                 ->once()
                 ->andReturn($testData);
         });

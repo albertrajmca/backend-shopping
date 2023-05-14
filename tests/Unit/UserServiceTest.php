@@ -58,7 +58,7 @@ class UserServiceTest extends TestCase
         $testData = "ijGXkhJVAlBDUflUOSG8LXSJ3LVtHjPz3b3kbnyB";
         $this->mock(UserServiceInterface::class, function (MockInterface $mock) use($testData) {
             $mock
-                ->shouldReceive('store')
+                ->shouldReceive('createUser')
                 ->once()
                 ->andReturn($testData);
         });
@@ -85,7 +85,7 @@ class UserServiceTest extends TestCase
         $exception = new ModelNotCreatedException("User model not created");
         $this->mock(UserServiceInterface::class, function (MockInterface $mock) use($exception) {
             $mock
-                ->shouldReceive('store')
+                ->shouldReceive('createUser')
                 ->once()
                 ->andThrow($exception);
         });

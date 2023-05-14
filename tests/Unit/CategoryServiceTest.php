@@ -21,7 +21,7 @@ class CategoryServiceTest extends TestCase
                     ];
          $this->mock(CategoryServiceInterface::class, function(MockInterface $mock) use($sampleData){
             $mock
-            ->shouldReceive('listAllCategories')
+            ->shouldReceive('getAllCategories')
             ->once()
             ->andReturn($sampleData);
         });

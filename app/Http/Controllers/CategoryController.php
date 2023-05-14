@@ -24,7 +24,7 @@ class CategoryController extends Controller
      */
     public function __invoke(): AnonymousResourceCollection
     {
-        $categories = $this->categoryService->listAllCategories();
+        $categories = $this->categoryService->getAllCategories();
         return CategoryResource::collection($categories);
     }
 }
