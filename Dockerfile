@@ -27,11 +27,11 @@ COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN chown -R www-data:www-data /var/www/html && a2enmod rewrite
  
- # Copy the entrypoint script
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#  # Copy the entrypoint script
+# COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-# Make the entrypoint script executable
-RUN chmod +x /usr/local/bin/entrypoint.sh
+# # Make the entrypoint script executable
+# RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Set the entrypoint
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+# # Set the entrypoint
+# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
