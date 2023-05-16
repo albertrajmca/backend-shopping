@@ -6,5 +6,5 @@ use App\DataTransferObjects\RatingDataDTO;
 
 interface ProductReviewServiceInterface
 {
-    public function postReviewForProduct(RatingDataDTO $ratingDataDTO): void;
+    public function postReviewForProduct(RatingDataDTO $ratingDataDTO): mixed;
 }

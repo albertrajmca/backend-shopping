@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RatingDataValidation;
 use App\Services\ProductReviewServiceInterface;
 use Illuminate\Http\Response;
-
+use App\Exceptions\ProductReviewException;
+use Illuminate\Http\JsonResponse;
+use Exception;
 class ProductReviewController extends Controller
 {
 
@@ -23,9 +25,13 @@ class ProductReviewController extends Controller
       * @param RatingDataValidation $request
       * @return Response
       */
-    public function postReviewForProduct(RatingDataValidation $request): Response
+    public function postReviewForProduct(RatingDataValidation $request): JsonResponse | Response
     {
-        $this->reviewService->postReviewForProduct($request->data());
-        return response(['msg' => 'Review is submitted successfully'], 201);
+        try {
+             $this->reviewService->postReviewForProduct($request->data());
+             return response(['msg' => 'Review is submitted successfully'], Response::HTTP_CREATED);
+        } catch (Exception $e) {
+            return ProductReviewException::handle($e);
+        }
     }
 }

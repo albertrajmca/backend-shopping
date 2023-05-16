@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\DataTransferObjects\RatingDataDTO;
-use App\Exceptions\ModelNotCreatedException;
 use App\Models\Review;
 use Illuminate\Http\Request;
 
@@ -15,7 +14,7 @@ class ProductReviewRepository
      * @param Request $data
      * @return void
      */
-    public function postReviewForProduct(RatingDataDTO $ratingDataDTO): void
+    public function postReviewForProduct(RatingDataDTO $ratingDataDTO): Review
     {
         $review = new Review();
         $review->user_id = request()->user()->id;
@@ -24,9 +23,7 @@ class ProductReviewRepository
         $review->rating = $ratingDataDTO->rating;
         $review->comment = $ratingDataDTO->comment;
         $review->save();
-        if (!$review) {
-            throw new ModelNotCreatedException("Review model not created");
-        }
+        return $review;
     }
 
 }
