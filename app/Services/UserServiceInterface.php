@@ -6,6 +6,6 @@ use Illuminate\Http\Request;
 
 interface UserServiceInterface
 {
-    public function store(Request $request);
-    public function generateToken(string $email, string $password);
+    public function createUser(Request $request): array;
+    public function generateToken(string $email, string $password): array;
 }

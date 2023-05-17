@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Illuminate\Http\Request;
+use App\DataTransferObjects\RatingDataDTO;
 
 interface ProductReviewServiceInterface
 {
-    public function store(Request $request);
+    public function postReviewForProduct(RatingDataDTO $ratingDataDTO): mixed;
 }

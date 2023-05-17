@@ -23,7 +23,7 @@ class ProductService implements ProductServiceInterface
      * @param Request $request
      * @return Collection
      */
-    public function listAllProducts(Request $request): Collection
+    public function getAllProducts(Request $request): Collection
     {
         return $this->productRepository->getAllProducts($request);
     }
@@ -34,7 +34,7 @@ class ProductService implements ProductServiceInterface
      * @param integer $id
      * @return Product
      */
-    public function showProduct(int $id): Product
+    public function getSingleProduct(int $id): Product
     {
         return $this->productRepository->findById($id);
     }

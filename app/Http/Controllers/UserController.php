@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SignupRequest;
+use App\Http\Requests\SignupDataValidation;
 use App\Services\UserServiceInterface;
 
 class UserController extends Controller
@@ -17,11 +17,11 @@ class UserController extends Controller
     /**
      * Method used to sign up a user
      *
-     * @param SignupRequest $request
+     * @param SignupDataValidation $request
      * @return array
      */
-    public function store(SignupRequest $request): array
+    public function createUser(SignupDataValidation $request): array
     {
-        return $this->userService->store($request);
+        return $this->userService->createUser($request);
     }
 }

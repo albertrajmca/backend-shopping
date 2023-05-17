@@ -18,8 +18,6 @@ class UserRepository
      */
     public function findUser(string $email): User
     {
-        // throw new ModelNotFoundException("User model not found");
-
         $user = User::where('email', $email)->first();
         if(!$user) {
             throw new ModelNotFoundException("User model not found");
@@ -33,7 +31,7 @@ class UserRepository
      * @param Request $request
      * @return User
      */
-    public function store(Request $request): User
+    public function createUser(Request $request): User
     {
         $user = new User();
         $user->name = $request->name;

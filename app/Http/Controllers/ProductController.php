@@ -22,9 +22,9 @@ class ProductController extends Controller
      * @param Request $request
      * @return AnonymousResourceCollection
      */
-    public function index(Request $request): AnonymousResourceCollection
+    public function getAllProducts(Request $request): AnonymousResourceCollection
     {
-        $products = $this->productService->listAllProducts($request);
+        $products = $this->productService->getAllProducts($request);
         return ProductResource::collection($products);
     }
 
@@ -34,9 +34,9 @@ class ProductController extends Controller
      * @param int $id
      * @return ProductResource
      */
-    public function show(int $id): ProductResource
+    public function getSingleProduct(int $id): ProductResource
     {
-        $product = $this->productService->showProduct($id);
+        $product = $this->productService->getSingleProduct($id);
         return ProductResource::make($product);
     }
 }

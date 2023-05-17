@@ -2,13 +2,16 @@
 
 namespace Tests\Unit;
 
+use App\DataTransferObjects\RatingDataDTO;
 use App\Exceptions\ModelNotCreatedException;
 use App\Models\Product;
 use App\Models\User;
+use App\Repositories\ProductReviewRepository;
 use App\Services\ProductReviewServiceInterface;
 use Faker\Factory as Faker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery\MockInterface;
+use PDOException;
 use Tests\TestCase;
 
 class ProductReviewServiceTest extends TestCase
@@ -31,7 +34,7 @@ class ProductReviewServiceTest extends TestCase
 
         $this->mock(ProductReviewServiceInterface::class, function (MockInterface $mock) use ($testData) {
             $mock
-                ->shouldReceive('store')
+                ->shouldReceive('postReviewForProduct')
                 ->once()
                 ->andReturn($testData);
         });
@@ -54,13 +57,13 @@ class ProductReviewServiceTest extends TestCase
     public function test_mock_product_review_service_exception()
     {
         Product::factory()->count(10)->create();
-        $exception = new ModelNotCreatedException("Review model not created");
+        $exception = new ModelNotCreatedException();
         User::factory()->count(4)->create();
         $randomUser = User::first();
 
         $this->mock(ProductReviewServiceInterface::class, function (MockInterface $mock) use ($exception) {
             $mock
-                ->shouldReceive('store')
+                ->shouldReceive('postReviewForProduct')
                 ->once()
                 ->andThrow($exception);
         });
@@ -74,9 +77,9 @@ class ProductReviewServiceTest extends TestCase
                     'comment' => $faker->sentence,
                 ]);
 
-        $response->assertUnprocessable();
+        $response->assertStatus(409);
         $msg = $response->json('message');
         $this->assertIsString($msg);
-        $response->assertSee("Review model not created");
+        $response->assertSee("Product review not created");
     }
 }

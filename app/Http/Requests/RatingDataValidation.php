@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\DataTransferObjects\RatingDataDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RatingStoreRequest extends FormRequest
+class RatingDataValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,5 +29,15 @@ class RatingStoreRequest extends FormRequest
             'rating' => 'required|integer|between:1,5',
             'comment' => 'required'
         ];
+    }
+
+    public function data()
+    {
+        return new RatingDataDTO([
+            'title' => $this->input('title'),
+            'rating' => $this->input('rating'),
+            'comment' => $this->input('comment'),
+            'productId' => $this->route('id'),
+        ]);
     }
 }

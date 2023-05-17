@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\User;
 
-class SignupRequest extends FormRequest
+class TokenDataValidation extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +25,8 @@ class SignupRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|max:20|confirmed',
-            'password_confirmation' => 'required'
+            'email' => 'required|email|exists:'.User::class,',email',
+            'password' => 'required'
         ];
     }
 }

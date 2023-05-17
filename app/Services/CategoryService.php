@@ -20,7 +20,7 @@ class CategoryService implements CategoryServiceInterface
      *
      * @return Collection
      */
-    public function listAllCategories(): Collection
+    public function getAllCategories(): Collection
     {
         return $this->categoryRepository->getAllCategories();
     }
